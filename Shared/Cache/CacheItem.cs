@@ -1,9 +1,7 @@
 using System;
 using Darwin.Shared.Cache;
-using Microsoft;
 
 using static Darwin.Shared.Utility.Guard;
-//using static CacheManager.Core.Utility.Guard;
 
 namespace CacheManager.Core
 {
