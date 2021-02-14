@@ -1,54 +1,24 @@
 using System;
+using Darwin.Shared.Cache.Model;
 
-namespace Darwin.Shared.Cache 
+namespace Darwin.Shared.Cache
 {
-    public interface ICache<TCacheValue> : IDisposable
+    public interface ICache<K, V> : IDisposable
     {
- 
-        TCacheValue this[string key] { get; set; }
-
-        
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1023:IndexersShouldNotBeMultidimensional", Justification = "nope")]
-        TCacheValue this[string key, string region] { get; set; }
-
-        bool Add(string key, TCacheValue value);
-
-        bool Add(string key, TCacheValue value, string region);
-
-        bool Add(CacheItem<TCacheValue> item);
-
+        int ActiveCount { get; }
+        int Count { get; }
+        int PreviousCount { get; }
         void Clear();
-
-        void ClearRegion(string region);
-
-        bool Exists(string key);
-
-        bool Exists(string key, string region);
-
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1716:IdentifiersShouldNotMatchKeywords", MessageId = "Get", Justification = "Maybe at some point.")]
-        TCacheValue Get(string key);
-
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1716:IdentifiersShouldNotMatchKeywords", MessageId = "Get", Justification = "Maybe at some point.")]
-        TCacheValue Get(string key, string region);
-
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1716:IdentifiersShouldNotMatchKeywords", MessageId = "Get", Justification = "Maybe at some point.")]
-        TOut Get<TOut>(string key);
-
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1716:IdentifiersShouldNotMatchKeywords", MessageId = "Get", Justification = "Maybe at some point.")]
-        TOut Get<TOut>(string key, string region);
-
-        CacheItem<TCacheValue> GetCacheItem(string key);
-
-        CacheItem<TCacheValue> GetCacheItem(string key, string region);
-
-        void Put(string key, TCacheValue value);
-
-        void Put(string key, TCacheValue value, string region);
-
-        void Put(CacheItem<TCacheValue> item);
-
-        bool Remove(string key);
-
-        bool Remove(string key, string region);
+        void Add(K key, V data);
+        void Add(K Key, V data, Func<V> UpdateOnExpire);
+        bool Update(K key, V data);
+        bool ActiveLookUp(K key);
+        bool LookUp(K key);
+        CacheItem<V> ActiveRemove(K key);
+        CacheItem<V> Remove(K key);
+        V GetValue(K key);
+        V GetActiveValue(K key);
+        event EmptyCacheHandler EmptyCacheEvent;
     }
+    public delegate void EmptyCacheHandler(object sender, EventArgs args);
 }

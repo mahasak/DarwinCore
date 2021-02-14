@@ -4,17 +4,20 @@ using static Darwin.Shared.Utility.Guard;
 namespace Darwin.Shared.Cache.Model
 {
     [Serializable]
-    public class CacheItem<T>
+    public class CacheItem<V>
     {
         public string Key { get; }
-        public int Frequency { get; } = 1;
-        public T Data { get; }
+        public int Frequency { get; set;} = 1;
+        public V Data { get; set;}
         public string Region { get; }
         public ExpirationMode ExpirationMode { get; }
         public DateTime CreateDate { get; }
-        public DateTime LastAccessDate { get; }
+
+        public DateTime ModifyDate { get; set;}
+
+        public DateTime LastAccessDate { get; set;}
         public TimeSpan ExpirationTimeout { get; }
-        public Func<T> OnExpire { get; set; }
+        public Func<V> OnExpire { get; set; }
         public bool ExpireByDefault { get; } = true;
         public Type DataType { get; }
         public bool IsExpired
@@ -34,27 +37,27 @@ namespace Darwin.Shared.Cache.Model
                 : $"'{Key}', exp:{ExpirationMode.ToString()} {ExpirationTimeout}, lastAccess:{LastAccessDate}";
         }
 
-        public CacheItem(string key, T data)
+        public CacheItem(string key, V data)
             : this(key, data, null, null, null, null, null)
         {
             Data = data;
             CreateDate = DateTime.Now;
         }
-        public CacheItem(string key, T data, string region)
+        public CacheItem(string key, V data, string region)
             : this(key, data, region, null, null, null, null)
         {
             Data = data;
             CreateDate = DateTime.Now;
         }
 
-        public CacheItem(string key, T data, ExpirationMode mode, TimeSpan timeout)
+        public CacheItem(string key, V data, ExpirationMode mode, TimeSpan timeout)
             : this(key, data, null, mode, timeout, null, null)
         {
             Data = data;
             CreateDate = DateTime.Now;
         }
 
-        public CacheItem(string key, T data, string region, ExpirationMode mode, TimeSpan timeout)
+        public CacheItem(string key, V data, string region, ExpirationMode mode, TimeSpan timeout)
             : this(key, data, region, mode, timeout, null, null)
         {
             Data = data;
@@ -65,7 +68,7 @@ namespace Darwin.Shared.Cache.Model
         {
         }
 
-        private CacheItem(string key, T data, string region, ExpirationMode? mode, TimeSpan? timeout, DateTime? created, DateTime? lastAccess, bool expirationByDefault = true)
+        private CacheItem(string key, V data, string region, ExpirationMode? mode, TimeSpan? timeout, DateTime? created, DateTime? lastAccess, bool expirationByDefault = true)
         {
             NotNullOrWhiteSpace(key, nameof(key));
             NotNull(data, nameof(data));
