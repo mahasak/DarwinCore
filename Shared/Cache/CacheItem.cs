@@ -42,8 +42,8 @@ namespace Darwin.Shared.Cache
             Region = region;
             Value = value;
             ValueType = value.GetType();
-            ExpirationMode = expiration ?? ExpirationMode.Default;
-            ExpirationTimeout = (ExpirationMode == ExpirationMode.None || ExpirationMode == ExpirationMode.Default) ? TimeSpan.Zero : timeout ?? TimeSpan.Zero;
+            ExpirationMode = expiration ?? ExpirationMode.None;
+            ExpirationTimeout = (ExpirationMode == ExpirationMode.None || ExpirationMode == ExpirationMode.None) ? TimeSpan.Zero : timeout ?? TimeSpan.Zero;
             UsesExpirationDefaults = expirationDefaults;
 
             if (ExpirationTimeout.TotalDays > 365)
@@ -51,7 +51,7 @@ namespace Darwin.Shared.Cache
                 throw new ArgumentOutOfRangeException(nameof(timeout), "Expiration timeout must be between 00:00:00 and 365:00:00:00.");
             }
 
-            if (ExpirationMode != ExpirationMode.Default && ExpirationMode != ExpirationMode.None && ExpirationTimeout <= TimeSpan.Zero)
+            if (ExpirationMode != ExpirationMode.None && ExpirationMode != ExpirationMode.None && ExpirationTimeout <= TimeSpan.Zero)
             {
                 throw new ArgumentOutOfRangeException(nameof(timeout), "Expiration timeout must be greater than zero if expiration mode is defined.");
             }
@@ -154,7 +154,7 @@ namespace Darwin.Shared.Cache
             new CacheItem<T>(Key, Region, Value, ExpirationMode.None, TimeSpan.Zero, CreateDate, LastAccessDate, false);
 
         public CacheItem<T> WithDefaultExpiration() =>
-            new CacheItem<T>(Key, Region, Value, ExpirationMode.Default, TimeSpan.Zero, CreateDate, LastAccessDate, true);
+            new CacheItem<T>(Key, Region, Value, ExpirationMode.None, TimeSpan.Zero, CreateDate, LastAccessDate, true);
 
         public CacheItem<T> WithValue(T value) =>
             new CacheItem<T>(Key, Region, value, ExpirationMode, ExpirationTimeout, CreateDate, LastAccessDate, UsesExpirationDefaults);
