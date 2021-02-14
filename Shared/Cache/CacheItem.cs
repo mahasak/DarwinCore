@@ -3,7 +3,7 @@ using Darwin.Shared.Cache;
 
 using static Darwin.Shared.Utility.Guard;
 
-namespace CacheManager.Core
+namespace Darwin.Shared.Cache
 {
     public class CacheItem<T> : ICacheItemProperties
     {
